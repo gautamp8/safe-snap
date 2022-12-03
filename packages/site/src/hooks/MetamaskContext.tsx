@@ -14,12 +14,14 @@ export type MetamaskState = {
   installedSnap?: Snap;
   error?: Error;
   isActive: boolean;
+  safeAddress: string;
 };
 
 const initialState: MetamaskState = {
   isFlask: false,
   error: undefined,
-  isActive: false
+  isActive: false,
+  safeAddress: '',
 };
 
 type MetamaskDispatch = { type: MetamaskActions; payload: any };
@@ -38,7 +40,8 @@ export enum MetamaskActions {
   SetFlaskDetected = 'SetFlaskDetected',
   SetError = 'SetError',
   SetStatus = 'SetStatus',
-  Reset = 'Reset'
+  Reset = 'Reset',
+  InputChange = 'InputChange',
 }
 
 const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
@@ -62,8 +65,7 @@ const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
       };
 
     case MetamaskActions.SetStatus:
-      const status = action.payload;
-
+      const { status, safeAddress } = action.payload;
       return {
         ...state,
         isActive: action.payload,
@@ -71,6 +73,11 @@ const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
 
     case MetamaskActions.Reset:
       return initialState;
+    case MetamaskActions.InputChange:
+      return {
+        ...state,
+        safeAddress: action.payload,
+      };
 
     default:
       return state;

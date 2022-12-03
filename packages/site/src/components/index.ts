@@ -6,3 +6,5 @@ export * from './MetaMask';
 export * from './PoweredBy';
 export * from './SnapLogo';
 export * from './Toggle';
+export * from './InputField';
+export * from './DoubleButtonCard';

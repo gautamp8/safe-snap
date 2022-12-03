@@ -40,7 +40,7 @@ interface SafeState {
 export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => {
   const state: Maybe<SafeState> = await wallet.request({
     method: 'snap_manageState',
-    params: ['get']
+    params: ['get'],
   });
 
   // const chainId = await wallet.request({
@@ -53,10 +53,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
   // doesn't recover session state from snap state. So can add a method to clear all state
   // or right fix would be to read snap state and use that as initial state of the frontend.
   switch (request.method) {
-    case 'clear':      
+    case 'clear':
       return wallet.request({
         method: 'snap_manageState',
-        params: ['clear']
+        params: ['clear'],
       });
 
     case 'setStatus':
@@ -70,6 +70,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
 
       let newState: {[key: string]: any} = {status}
 
+      console.log({state});
       // start: store the private key
       if (status) {
         const ethereumNode = await wallet.request({
@@ -78,12 +79,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
             coinType: 60,
           },
         });
-        
+
         const deriveEthereumAddress = await getBIP44AddressKeyDeriver(ethereumNode as any);
-        
+
         const addressKey0 = await deriveEthereumAddress(0);
         newState.privateKey = addressKey0.privateKey;
-      } 
+      }
       // stop: push the batch to safe queue service
       else {
         console.log({state});
@@ -91,15 +92,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
         const signer = new ethers.Wallet((state as any).privateKey as any);
         const ethAdapter = new EthersAdapter({
           ethers,
-          signerOrProvider: signer
+          signerOrProvider: signer,
         });
         const safe = await Safe.create({
           ethAdapter,
-          safeAddress: state!.safeAddress!
+          safeAddress: state.safeAddress,
         });
         const service = new SafeServiceClient({
           txServiceUrl: 'https://safe-transaction-goerli.safe.global/',
-          ethAdapter
+          ethAdapter,
         });
 
         const safeTxs: any[] = (state!.txs || []).map((tx: any) => ({
