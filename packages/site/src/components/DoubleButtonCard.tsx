@@ -5,7 +5,8 @@ type CardProps = {
   content: {
     title: string;
     description: string;
-    button: ReactNode;
+    firstButton: ReactNode;
+    secondButton: ReactNode;
   };
   disabled?: boolean;
   fullWidth?: boolean;
@@ -32,6 +33,24 @@ const CardWrapper = styled.div<{ fullWidth?: boolean; disabled: boolean }>`
   }
 `;
 
+const HorizontalDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 30px;
+  background-color: ${({ theme }) => theme.colors.card.default};
+  margin-right: 2.4rem;
+  padding: 2.4rem;
+  border-radius: ${({ theme }) => theme.radii.default};
+  box-shadow: ${({ theme }) => theme.shadows.default};
+  align-self: stretch;
+  ${({ theme }) => theme.mediaQueries.small} {
+    width: 100%;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+    padding: 1.6rem;
+  }
+`;
+
 const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes.large};
   margin: 0;
@@ -45,13 +64,16 @@ const Description = styled.p`
   margin-bottom: 2.4rem;
 `;
 
-export const Card = ({ content, disabled = false, fullWidth }: CardProps) => {
-  const { title, description, button } = content;
+export const DoubleButtonCard = ({ content, disabled = false, fullWidth }: CardProps) => {
+  const { title, description, firstButton, secondButton } = content;
   return (
     <CardWrapper fullWidth={fullWidth} disabled={disabled}>
       <Title>{title}</Title>
       <Description>{description}</Description>
-      {button}
+      <HorizontalDiv>
+        {firstButton}
+        {secondButton}
+      </HorizontalDiv>
     </CardWrapper>
   );
 };

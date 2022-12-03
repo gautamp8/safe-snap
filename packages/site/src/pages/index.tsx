@@ -18,6 +18,8 @@ import {
   StopSessionButton,
   StartSessionButton,
   ClearButton,
+  InputField,
+  DoubleButtonCard
 } from '../components';
 
 const Container = styled.div`
@@ -133,28 +135,83 @@ const Index = () => {
 
   const handleStart = async () => {
     await setStatusInSnap(true);
-    dispatch({type: MetamaskActions.SetStatus, payload: true});
+    dispatch({ type: MetamaskActions.SetStatus, payload: true,  });
   };
 
   const handleStop = async () => {
     await setStatusInSnap(false);
-    dispatch({type: MetamaskActions.SetStatus, payload: false});
+    dispatch({ type: MetamaskActions.SetStatus, payload: false });
   };
 
   const handleClick = async () => {
     await setClearInSnap();
-    dispatch({ type :MetamaskActions.Reset, payload: null })
-  }
+    dispatch({ type: MetamaskActions.Reset, payload: null });
+  };
 
+  const handleInputChange = (event) => {
+    dispatch({
+      type: MetamaskActions.InputChange,
+      payload: event.target.value,
+    });
+  };
+
+  console.log("I'm rendering page");
   return (
     <Container>
       <Heading>
         Welcome to <Span>safe-snap</Span>
       </Heading>
-      <Subtitle>
-        Get started by editing <code>src/index.ts</code>
-      </Subtitle>
+      <InputField
+        placeholder="Enter Safe Address..."
+        onChange={handleInputChange}
+        value={state.safeAddress}
+      />
       <CardContainer>
+        <DoubleButtonCard
+          content={
+            state.isActive
+              ? {
+                  title: 'Stop Session',
+                  description:
+                    'Stop session to stop and send all the txs to safe queue.',
+                  firstButton: (
+                    <StopSessionButton
+                      onClick={handleStop}
+                      disabled={!state.installedSnap}
+                    />
+                  ),
+                  secondButton: (
+                    <ClearButton
+                      onClick={handleClick}
+                      disabled={!state.installedSnap}
+                    />
+                  ),
+                }
+              : {
+                  title: 'Start Session',
+                  description:
+                    'Start session to record all new metamask txs as safe transactions and send to the safe queue.',
+                  firstButton: (
+                    <StartSessionButton
+                      onClick={handleStart}
+                      disabled={!state.installedSnap}
+                    />
+                  ),
+                  secondButton: (
+                    <ClearButton
+                      onClick={handleClick}
+                      disabled={!state.installedSnap}
+                    />
+                  ),
+                }
+          }
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
         {state.error && (
           <ErrorMessage>
             <b>An error happened:</b> {state.error.message}
@@ -176,7 +233,7 @@ const Index = () => {
             content={{
               title: 'Connect',
               description:
-                'Get started by connecting to and installing the example snap.',
+                'Get started by connecting to and installing the safe snap.',
               button: (
                 <ConnectButton
                   onClick={handleConnectClick}
@@ -203,33 +260,6 @@ const Index = () => {
             disabled={!state.installedSnap}
           />
         )}
-        <Card
-          content={ state.isActive ?  {
-            title: "Stop Session",
-            description:
-              'Stop session to stop and send all the txs to safe queue.',
-            button: 
-              <StopSessionButton
-                onClick={handleStop}
-                disabled={!state.installedSnap}
-              />
-          } : { title: "Start Session", description: "Start session to record all new metamask txs as safe transactions and send to the safe queue.", button: <StartSessionButton onClick={handleStart} disabled={!state.installedSnap}/>}}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Notice>
-          <ClearButton onClick={handleClick} disabled={!state.installedSnap}/>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
       </CardContainer>
     </Container>
   );
