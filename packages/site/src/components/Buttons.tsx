@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { Component, ComponentProps } from 'react';
 import styled from 'styled-components';
 import { MetamaskState } from '../hooks';
 import { ReactComponent as FlaskFox } from '../assets/flask_fox.svg';
@@ -96,6 +96,18 @@ export const ReconnectButton = (props: ComponentProps<typeof Button>) => {
 
 export const SendHelloButton = (props: ComponentProps<typeof Button>) => {
   return <Button {...props}>Send message</Button>;
+};
+
+export const StartSessionButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Start Session</Button>;
+};
+
+export const StopSessionButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Stop Session</Button>;
+};
+
+export const ClearButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Clear Session</Button>
 };
 
 export const HeaderButtons = ({

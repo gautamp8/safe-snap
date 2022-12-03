@@ -7,17 +7,19 @@ import {
   useReducer,
 } from 'react';
 import { Snap } from '../types';
-import { isFlask, getSnap } from '../utils';
+import { isFlask, getSnap, setStatusInSnap } from '../utils';
 
 export type MetamaskState = {
   isFlask: boolean;
   installedSnap?: Snap;
   error?: Error;
+  isActive: boolean;
 };
 
 const initialState: MetamaskState = {
   isFlask: false,
   error: undefined,
+  isActive: false
 };
 
 type MetamaskDispatch = { type: MetamaskActions; payload: any };
@@ -35,6 +37,8 @@ export enum MetamaskActions {
   SetInstalled = 'SetInstalled',
   SetFlaskDetected = 'SetFlaskDetected',
   SetError = 'SetError',
+  SetStatus = 'SetStatus',
+  Reset = 'Reset'
 }
 
 const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
@@ -56,6 +60,17 @@ const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
         ...state,
         error: action.payload,
       };
+
+    case MetamaskActions.SetStatus:
+      const status = action.payload;
+
+      return {
+        ...state,
+        isActive: action.payload,
+      };
+
+    case MetamaskActions.Reset:
+      return initialState;
 
     default:
       return state;

@@ -5,6 +5,8 @@ import {
   connectSnap,
   getSnap,
   sendHello,
+  setClearInSnap,
+  setStatusInSnap,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -13,6 +15,9 @@ import {
   ReconnectButton,
   SendHelloButton,
   Card,
+  StopSessionButton,
+  StartSessionButton,
+  ClearButton,
 } from '../components';
 
 const Container = styled.div`
@@ -126,10 +131,25 @@ const Index = () => {
     }
   };
 
+  const handleStart = async () => {
+    await setStatusInSnap(true);
+    dispatch({type: MetamaskActions.SetStatus, payload: true});
+  };
+
+  const handleStop = async () => {
+    await setStatusInSnap(false);
+    dispatch({type: MetamaskActions.SetStatus, payload: false});
+  };
+
+  const handleClick = async () => {
+    await setClearInSnap();
+    dispatch({ type :MetamaskActions.Reset, payload: null })
+  }
+
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>safe-snap</Span>
       </Heading>
       <Subtitle>
         Get started by editing <code>src/index.ts</code>
@@ -184,17 +204,16 @@ const Index = () => {
           />
         )}
         <Card
-          content={{
-            title: 'Send Hello message',
+          content={ state.isActive ?  {
+            title: "Stop Session",
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
-            button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
+              'Stop session to stop and send all the txs to safe queue.',
+            button: 
+              <StopSessionButton
+                onClick={handleStop}
                 disabled={!state.installedSnap}
               />
-            ),
-          }}
+          } : { title: "Start Session", description: "Start session to record all new metamask txs as safe transactions and send to the safe queue.", button: <StartSessionButton onClick={handleStart} disabled={!state.installedSnap}/>}}
           disabled={!state.installedSnap}
           fullWidth={
             state.isFlask &&
@@ -203,6 +222,7 @@ const Index = () => {
           }
         />
         <Notice>
+          <ClearButton onClick={handleClick} disabled={!state.installedSnap}/>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}
             <b>package.json</b> must be located in the server root directory and
