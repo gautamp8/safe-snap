@@ -91,7 +91,7 @@ export const setSafeAddressInSnap = async (safeAddress: string) => {
     params: [
       defaultSnapOrigin,
       {
-        method: 'setStatus',
+        method: 'setSafe',
         params: {safeAddress},
       },
     ],

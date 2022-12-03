@@ -89,26 +89,26 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
       else {
         console.log({state});
 
-        const signer = new ethers.Wallet((state as any).privateKey as any);
+        const signer = new ethers.Wallet((state as any).privateKey as any, new ethers.providers.Web3Provider(wallet));
         const ethAdapter = new EthersAdapter({
           ethers,
           signerOrProvider: signer,
         });
         const safe = await Safe.create({
           ethAdapter,
-          safeAddress: state.safeAddress,
+          safeAddress: state!.safeAddress!,
         });
-        const service = new SafeServiceClient({
-          txServiceUrl: 'https://safe-transaction-goerli.safe.global/',
-          ethAdapter,
-        });
+        // const service = new SafeServiceClient({
+        //   txServiceUrl: 'https://safe-transaction-goerli.safe.global/',
+        //   ethAdapter,
+        // });
 
-        const safeTxs: any[] = (state!.txs || []).map((tx: any) => ({
-          to: tx.to,
-          value: tx.value,
-          data: tx.data,
-          operation: 0
-        }));
+        // const safeTxs: any[] = (state!.txs || []).map((tx: any) => ({
+        //   to: tx.to,
+        //   value: tx.value,
+        //   data: tx.data,
+        //   operation: 0
+        // }));
 
         // const txs = await Promise.all(safeTxs.map(async tx => {
         //   const safeTx = await safe.createTransaction({safeTransactionData: tx});

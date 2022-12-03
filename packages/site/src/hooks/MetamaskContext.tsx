@@ -73,6 +73,7 @@ const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
 
     case MetamaskActions.Reset:
       return initialState;
+
     case MetamaskActions.InputChange:
       return {
         ...state,

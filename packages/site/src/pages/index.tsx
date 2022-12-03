@@ -6,6 +6,7 @@ import {
   getSnap,
   sendHello,
   setClearInSnap,
+  setSafeAddressInSnap,
   setStatusInSnap,
   shouldDisplayReconnectButton,
 } from '../utils';
@@ -148,10 +149,12 @@ const Index = () => {
     dispatch({ type: MetamaskActions.Reset, payload: null });
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = async (event: any) => {
+    const safeAddress = event.target.value;
+    await setSafeAddressInSnap(safeAddress)
     dispatch({
       type: MetamaskActions.InputChange,
-      payload: event.target.value,
+      payload: safeAddress,
     });
   };
 
